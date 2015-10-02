@@ -66,3 +66,22 @@ HexGame.Unit.prototype.moveUnit = function(tile) {
 
     unitMovement.start();
 };
+
+HexGame.Unit.prototype.attack = function(attacked) {
+    var attacker = this;
+
+    //both units attack each other
+    var damageToAttacked = Math.max(0, attacker.data.attack * Math.random() - attacked.data.defense * Math.random());
+    var damageToAttacker = Math.max(0, attacked.data.attack * Math.random() - attacker.data.defense * Math.random());
+
+    attacked.data.health -= damageToAttacked;
+    attacker.data.health -= damageToAttacker;
+
+    if(attacked.data.health <= 0) {
+        attacked.kill();
+    }
+
+    if(attacker.data.health <= 0) {
+        attacker.kill();
+    }
+};
