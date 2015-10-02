@@ -11,5 +11,33 @@ HexGame.GameState = {
     create: function() {
         this.map = JSON.parse(this.game.cache.getText('map'));
         this.board = new HexGame.Board(this, this.map.grid);
+
+        //unit groups
+        this.playerUnits = this.add.group();
+        this.enemyUnits = this.add.group();
+
+        this.initUnits();
+    },
+    initUnits: function() {
+        //load player units
+        this.playerUnitsData = JSON.parse(this.game.cache.getText('playerUnits'));
+
+        var unit;
+        this.playerUnitsData.forEach(function(unitData) {
+            unit = new HexGame.Unit(this, unitData);
+
+            //unit belongs to the player
+            unit.isPlayer = true;
+
+            this.playerUnits.add(unit);
+        }, this);
+
+        this.enemyUnitsData = JSON.parse(this.game.cache.getText('enemyUnits'));
+
+        this.enemyUnitsData.forEach(function(unitData) {
+            unit = new HexGame.Unit(this, unitData);
+
+            this.enemyUnits.add(unit);
+        }, this);
     }
 };
