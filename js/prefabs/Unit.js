@@ -13,6 +13,10 @@ HexGame.Unit = function(state, data) {
     this.data = data;
 
     this.anchor.setTo(0.5);
+
+    this.inputEnabled = true;
+    this.input.pixelPerfectClick = true;
+    this.events.onInputDown.add(this.showMovementOptions, this);
 };
 
 HexGame.Unit.prototype = Object.create(Phaser.Sprite.prototype);
@@ -38,6 +42,27 @@ HexGame.Unit.prototype.showMovementOptions = function() {
     }, this);
 };
 
-HexGame.Unit.prototype.moveUnit = function() {
-    console.log("move unit");
-}
+HexGame.Unit.prototype.moveUnit = function(tile) {
+    this.state.clearSelection();
+
+    this.state.uiBlocked = true;
+
+    //target position
+    var pos = this.board.getXYFromRowCol(tile.row, tile.col);
+
+    var unitMovement = this.game.add.tween(this);
+    unitMovement.to(pos, 200);
+    unitMovement.onComplete.add(function() {
+        this.state.uiBlocked = false;
+        this.row = tile.row;
+        this.col = tile.col;
+
+        //check for battles
+
+        //check for game ending
+
+        //prepare next unit
+    }, this);
+
+    unitMovement.start();
+};
