@@ -52,3 +52,31 @@ HexGame.Board = function(state, grid) {
 
 HexGame.Board.prototype = Object.create(Phaser.Group.prototype);
 HexGame.Board.prototype.constructor = HexGame.Board;
+
+HexGame.Board.prototype.getFromRowCol = function(row, col) {
+    var foundTile;
+
+    this.forEach(function(tile) {
+        if(tile.row === row && tile.col === col) {
+            foundTile = tile;
+        }
+    }, this);
+
+    return tile;
+};
+
+HexGame.Board.prototype.getXYFromRowCol = function(row, col) {
+    var pos = {};
+
+    if(row % 2 === 0 ) {
+        pos.x = this.state.MARGIN_X + col * this.state.TILE_W + this.state.TILE_W/2;
+    }
+    //odd rows
+    else {
+        pos.x = this.state.MARGIN_X + col * this.state.TILE_W + this.state.TILE_W;
+    }
+
+    pos.y = this.state.MARGIN_Y + row * this.state.TILE_H * 3/4 + this.state.TILE_H/2;
+
+    return pos;
+}
