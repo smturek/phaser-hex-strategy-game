@@ -23,6 +23,7 @@ HexGame.Unit.prototype = Object.create(Phaser.Sprite.prototype);
 HexGame.Unit.prototype.constructor = HexGame.Unit;
 
 HexGame.Unit.prototype.showMovementOptions = function() {
+    this.state.clearSelection();
     //only will happen if the UI is free
     if(this.state.uiBlocked) {
         return;
@@ -58,6 +59,7 @@ HexGame.Unit.prototype.moveUnit = function(tile) {
         this.col = tile.col;
 
         //check for battles
+        this.checkBattle();
 
         //check for game ending
 
@@ -84,4 +86,29 @@ HexGame.Unit.prototype.attack = function(attacked) {
     if(attacker.data.health <= 0) {
         attacker.kill();
     }
+};
+
+HexGame.Unit.prototype.checkBattle = function() {
+    //get rival units
+    var rivalUnits = this.isPlayer ? this.state.enemyUnits : this.state.playerUnits;
+    var fightUnit;
+
+    //check rival army units to find a match
+    rivalUnits.forEachAlive(function(unit) {
+        if(this.row === unit.row && this.col === unit.col) {
+            console.log("in the same cell...  fight!")
+            fightUnit = unit;
+        }
+    }, this);
+
+    //fight to the death
+    if(fightUnit) {
+        while(this.data.health >= 0 && fightUnit.data.health >= 0) {
+            console.log("fighting!")
+            this.attack(fightUnit);
+        }
+        console.log("Battle Over");
+    }
+
+
 };
