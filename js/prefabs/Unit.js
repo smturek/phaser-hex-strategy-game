@@ -62,6 +62,7 @@ HexGame.Unit.prototype.moveUnit = function(tile) {
         this.checkBattle();
 
         //check for game ending
+        this.state.checkGameEnd();
 
         //prepare next unit
         this.state.prepareNextUnit();
