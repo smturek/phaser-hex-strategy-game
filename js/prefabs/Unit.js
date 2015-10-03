@@ -14,9 +14,9 @@ HexGame.Unit = function(state, data) {
 
     this.anchor.setTo(0.5);
 
-    this.inputEnabled = true;
-    this.input.pixelPerfectClick = true;
-    this.events.onInputDown.add(this.showMovementOptions, this);
+    // this.inputEnabled = true;
+    // this.input.pixelPerfectClick = true;
+    //this.events.onInputDown.add(this.showMovementOptions, this);
 };
 
 HexGame.Unit.prototype = Object.create(Phaser.Sprite.prototype);
@@ -64,6 +64,7 @@ HexGame.Unit.prototype.moveUnit = function(tile) {
         //check for game ending
 
         //prepare next unit
+        this.state.prepareNextUnit();
     }, this);
 
     unitMovement.start();
@@ -96,7 +97,6 @@ HexGame.Unit.prototype.checkBattle = function() {
     //check rival army units to find a match
     rivalUnits.forEachAlive(function(unit) {
         if(this.row === unit.row && this.col === unit.col) {
-            console.log("in the same cell...  fight!")
             fightUnit = unit;
         }
     }, this);
@@ -104,11 +104,7 @@ HexGame.Unit.prototype.checkBattle = function() {
     //fight to the death
     if(fightUnit) {
         while(this.data.health >= 0 && fightUnit.data.health >= 0) {
-            console.log("fighting!")
             this.attack(fightUnit);
         }
-        console.log("Battle Over");
     }
-
-
 };

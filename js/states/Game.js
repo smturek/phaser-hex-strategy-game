@@ -17,6 +17,9 @@ HexGame.GameState = {
         this.enemyUnits = this.add.group();
 
         this.initUnits();
+
+        //run turn
+        this.newTurn();
     },
     initUnits: function() {
         //load player units
@@ -47,5 +50,64 @@ HexGame.GameState = {
         this.board.forEach(function(tile) {
             tile.events.onInputDown.removeAll();
         }, this);
+    },
+    newTurn: function() {
+        //array to get all alive units
+        this.allUnits = [];
+
+        this.playerUnits.forEach(function(unit) {
+            this.allUnits.push(unit);
+        }, this);
+
+        this.enemyUnits.forEach(function(unit) {
+            this.allUnits.push(unit);
+        }, this);
+
+        //randomize array
+        this.shuffle(this.allUnits);
+
+        //keep track of the index of the current moving unit
+        this.currentUnitIndex = 0;
+
+        //prepare next unit
+        this.prepareNextUnit();
+    },
+    //shuffle array method from http://stackoverflow.com/questions/6274339/how-can-i-shuffle-an-array-in-javascript)
+    shuffle: function(array) {
+      var counter = array.length, temp, index;
+
+      // While there are elements in the array
+      while (counter > 0) {
+          // Pick a random index
+          index = Math.floor(Math.random() * counter);
+
+          // Decrease counter by 1
+          counter--;
+
+          // And swap the last element with it
+          temp = array[counter];
+          array[counter] = array[index];
+          array[index] = temp;
+      }
+
+      return array;
+    },
+    prepareNextUnit: function() {
+        //if there are units to move
+        if(this.currentUnitIndex < this.allUnits.length) {
+            //grab unit
+            var unit = this.allUnits[this.currentUnitIndex];
+            this.currentUnitIndex++;
+
+            if(unit.alive) {
+                unit.showMovementOptions();
+            }
+            else {
+                this.prepareNextUnit();
+            }
+        }
+        else {
+            this.newTurn();
+        }
     }
 };
