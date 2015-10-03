@@ -108,3 +108,43 @@ HexGame.Unit.prototype.checkBattle = function() {
         }
     }
 };
+
+HexGame.Unit.prototype.playTurn = function() {
+    if(this.isPlayer) {
+        this.showMovementOptions();
+    }
+    else {
+        this.aiEnemyMovement();
+    }
+};
+
+HexGame.Unit.prototype.aiEnemyMovement = function() {
+    //clear previous selection
+    this.state.clearSelection();
+
+    //get current tile
+    var currTile = this.board.getFromRowCol(this.row, this.col);
+
+    //get adjacent tiles
+    var adjacentTiles = this.board.getAdjacent(currTile, true);
+
+    //rival to attack if any
+    var targetTile;
+
+    adjacentTiles.forEach(function(tile) {
+        this.state.playerUnits.forEachAlive(function(unit) {
+            if(tile.row === unit.row && tile.col === unit.col) {
+                targetTile = tile;
+            }
+        }, this);
+    }, this);
+
+    //if no rival to attack, move to random tile;
+    if(!targetTile) {
+        var randomIndex = Math.floor(Math.random() * adjacentTiles.length);
+        targetTile = adjacentTiles[randomIndex];
+    }
+
+    //move to target tile
+    this.moveUnit(targetTile);
+};
